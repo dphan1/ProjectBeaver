@@ -43,6 +43,9 @@
          var result24 = <?php echo json_encode($arrayResult24); ?>;
          var result48 = <?php echo json_encode($arrayResult48); ?>;
 
+         // Copy current time
+         var currentTime = <?php echo $currentEpochTime; ?>;
+
          // Set google visualization package up
          google.load("visualization", "1", {packages:["corechart"]});
          google.setOnLoadCallback(drawChart24);
