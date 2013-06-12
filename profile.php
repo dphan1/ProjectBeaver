@@ -92,7 +92,14 @@
          $arrayResultExisted = $statementExisted->fetchAll();
          $arrayResultMigrated = $statementMigrated->fetchAll();
          $arrayResultFail = $statementFail->fetchAll();
-         $arrayResultProfileNotFound = $statementProfileNotFound->fetchAll();                          
+         $arrayResultProfileNotFound = $statementProfileNotFound->fetchAll();
+ 
+         $querySumProfile = "SELECT count(profile_id)
+                               FROM legacy_profiles";
+         $statementSumProfile = $pdo->prepare($querySumProfile);
+         $statementSumProfile->execute();
+         
+         $arrayResultSumProfile = $statementSumProfile->fetchAll();
          
       ?>
       <!-- Javascript code -->
@@ -252,6 +259,10 @@
          echo '- fail: ' . $arrayResultFail[0][0] . "<br>";
          echo '- profile_not_found: ' . $arrayResultProfileNotFound[0][0] . "<br><br>";
 
+         echo 'Percentage of profiles that have failed: ' . ($arrayResultFail[0][0] / $arrayResultMigrated[0][0] * 100) . '%' . "<br>"; 
+         echo 'Percentage of profiles that existed already: ' . ($arrayResultExisted[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>";
+         echo 'Percentage of profiles not found: ' . ($arrayResultProfileNotFound[0][0] / $arrayResultMigrated[0][0] * 100) . '%' . "<br>";
+         echo 'Percentage of profiles migrated: ' . ($arrayResultMigrated[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>"; 
       ?>
    </body>
 </html>
