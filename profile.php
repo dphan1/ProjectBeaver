@@ -1,5 +1,5 @@
 <?php
-   echo 'Login succeeded!' . "<br>";
+   echo 'Login succeeded!' . "<br><br>";
 ?>
 <html>
    <head>
@@ -28,6 +28,13 @@
 
          $arrayResult24 = $statement24->fetchAll();
          $arrayResult48 = $statement48->fetchAll();
+
+         // Compute total number of API calls for past 24 hours
+         $totalCallsPast24Hours = 0;
+         for ($i = 0; $i < count($arrayResult24); $i++) {
+            $totalCallsPast24Hours += $arrayResult24[$i]['calls'];
+         }
+         echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours . "<br>"; // Print it out!
       ?>
       <!-- Javascript code -->
       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -37,7 +44,7 @@
          var result48 = <?php echo json_encode($arrayResult48); ?>;
 
          // Copy the current time
-         var currentTime = <?php echo $currentEpochTime; ?>;
+         var currentTime = <?php echo $currentEpochTime; ?>
 
          // Set google visualization package up
          google.load("visualization", "1", {packages:["corechart"]});
