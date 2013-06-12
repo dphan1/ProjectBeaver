@@ -34,7 +34,6 @@
          for ($i = 0; $i < count($arrayResult24); $i++) {
             $totalCallsPast24Hours += $arrayResult24[$i]['calls'];
          }
-         echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours . "<br>"; // Print it out!
       ?>
       <!-- Javascript code -->
       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -176,6 +175,7 @@
    </head>
    <body>
       <div id="chart_div" style="width: 900px; height: 500px;"></div>
+      <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
       <div id="another_chart_div" style="width:900px; height: 500px;"></div>
    </body>
 </html>
