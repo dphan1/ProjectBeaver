@@ -34,6 +34,40 @@
          for ($i = 0; $i < count($arrayResult24); $i++) {
             $totalCallsPast24Hours += $arrayResult24[$i]['calls'];
          }
+         
+         $queryNotExisted= "SELECT count(profile_id) 
+                              FROM legacy_profiles
+                              WHERE track_type != 'existed'";
+         $statementNotExisted = $pdo->prepare($queryNotExisted);
+         $statementNotExisted->execute();
+
+         $queryNotMigrated = "SELECT count(profile_id)
+                                FROM legacy_profiles
+                                WHERE track_type != 'migrated'";
+         $statementNotMigrated = $pdo->prepare($queryNotMigrated);
+         $statementNotMigrated->execute();
+          
+        
+        
+         $queryNotFail = "SELECT count(profile_id)
+			    FROM legacy_profiles
+                            WHERE track_type != 'fail'";
+         $statementNotFail = $pdo->prepare($queryNotFail);
+         $statementNotFail->execute();
+
+         $queryNotProfileNotFound = "SELECT count(profile_id)
+                                       FROM legacy_profiles
+                                       WHERE track_type != 'profile_not_found'";
+         $statementNotProfileNotFound = $pdo->prepare($queryNotProfileNotFound);
+         $statementNotProfileNotFound->execute();
+         
+         $arrayResultNotExisted = $statementNotExisted->fetchAll();
+         $arrayResultNotMigrated = $statementNotMigrated->fetchAll();
+         $arrayResultNotFail = $statementNotFail->fetchAll();
+         $arrayResultNotProfileNotFound = $statementNotProfileNotFound->fetchAll();
+
+                          
+         
       ?>
       <!-- Javascript code -->
       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -176,6 +210,13 @@
    <body>
       <div id="chart_div" style="width: 900px; height: 500px;"></div>
       <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
-      <div id="another_chart_div" style="width:900px; height: 500px;"></div>
+      <div id="another_chart_div" style="width: 900px; height: 500px;"></div>
+      <?php
+         echo 'Number of profiles with track type that is NOT: <br>';
+         echo '- existed: ' . $arrayResultNotExisted[0][0] . "<br>";
+         echo '- migrated: ' . $arrayResultNotMigrated[0][0] . "<br>";
+         echo '- fail: ' . $arrayResultNotFail[0][0] . "<br>";
+         echo '- profile_not_found: ' . $arrayResultNotProfileNotFound[0][0] . "<br>"; 
+      ?>
    </body>
 </html>
