@@ -46,8 +46,6 @@
                                 WHERE track_type != 'migrated'";
          $statementNotMigrated = $pdo->prepare($queryNotMigrated);
          $statementNotMigrated->execute();
-          
-        
         
          $queryNotFail = "SELECT count(profile_id)
 			    FROM legacy_profiles
@@ -66,7 +64,35 @@
          $arrayResultNotFail = $statementNotFail->fetchAll();
          $arrayResultNotProfileNotFound = $statementNotProfileNotFound->fetchAll();
 
-                          
+
+         $queryExisted = "SELECT count(profile_id)
+                            FROM legacy_profiles
+                            WHERE track_type = 'existed'";
+         $statementExisted = $pdo->prepare($queryExisted);
+         $statementExisted->execute();
+
+         $queryMigrated = "SELECT count(profile_id)
+                             FROM legacy_profiles
+                             WHERE track_type = 'migrated'";
+         $statementMigrated = $pdo->prepare($queryMigrated);
+         $statementMigrated->execute();
+        
+         $queryFail = "SELECT count(profile_id)
+                         FROM legacy_profiles
+                         WHERE track_type = 'fail'";
+         $statementFail = $pdo->prepare($queryFail);
+         $statementFail->execute();
+
+         $queryProfileNotFound = "SELECT count(profile_id)
+                                    FROM legacy_profiles
+                                    WHERE track_type = 'profile_not_found'";
+         $statementProfileNotFound = $pdo->prepare($queryProfileNotFound);
+         $statementProfileNotFound->execute();
+
+         $arrayResultExisted = $statementExisted->fetchAll();
+         $arrayResultMigrated = $statementMigrated->fetchAll();
+         $arrayResultFail = $statementFail->fetchAll();
+         $arrayResultProfileNotFound = $statementProfileNotFound->fetchAll();                          
          
       ?>
       <!-- Javascript code -->
@@ -211,12 +237,21 @@
       <div id="chart_div" style="width: 900px; height: 500px;"></div>
       <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
       <div id="another_chart_div" style="width: 900px; height: 500px;"></div>
+
+      <!-- Print out legacy profiles analysis result -->
       <?php
          echo 'Number of profiles with track type that is NOT: <br>';
          echo '- existed: ' . $arrayResultNotExisted[0][0] . "<br>";
          echo '- migrated: ' . $arrayResultNotMigrated[0][0] . "<br>";
          echo '- fail: ' . $arrayResultNotFail[0][0] . "<br>";
-         echo '- profile_not_found: ' . $arrayResultNotProfileNotFound[0][0] . "<br>"; 
+         echo '- profile_not_found: ' . $arrayResultNotProfileNotFound[0][0] . "<br><br>"; 
+
+         echo 'Number of profiles with track type that is: <br>';
+         echo '- existed: ' . $arrayResultExisted[0][0] . "<br>";
+         echo '- migrated: ' . $arrayResultMigrated[0][0] . "<br>";
+         echo '- fail: ' . $arrayResultFail[0][0] . "<br>";
+         echo '- profile_not_found: ' . $arrayResultProfileNotFound[0][0] . "<br><br>";
+
       ?>
    </body>
 </html>
