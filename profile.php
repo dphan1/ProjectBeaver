@@ -112,6 +112,11 @@
          // Copy current time
          var currentTime = <?php echo $currentEpochTime; ?>;
 
+         var profileNotExisted = <?php echo $arrayResultNotExisted[0][0]; ?>;
+         var profileNotMigrated = <?php echo $arrayResultNotMigrated[0][0]; ?>;
+         var profileNotFailed = <?php echo $arrayResultNotFail[0][0]; ?>;
+         var profileNotNotFound = <?php echo $arrayResultNotProfileNotFound[0][0]; ?>;
+
          var profileExisted = <?php echo $arrayResultExisted[0][0]; ?>;
          var profileMigrated = <?php echo $arrayResultMigrated[0][0]; ?>;
          var profileFailed = <?php echo $arrayResultFail[0][0]; ?>;
@@ -121,9 +126,10 @@
 
          // Set google visualization package up
          google.load("visualization", "1", {packages:["corechart"]});
+         google.load("visualization", "1", {packages:['table']});
          google.setOnLoadCallback(drawChart24);
          google.setOnLoadCallback(drawChart48);
-         //google.setOnLoadCallback(drawChartLegacyProfile1);
+         google.setOnLoadCallback(drawChartLegacyProfile1);
          google.setOnLoadCallback(drawChartLegacyProfile2);
          //google.setOnLoadCallback(drawChartLegacyProfile3);
          
@@ -229,9 +235,20 @@
             chart.draw(data, options);
          }
 
-         //function drawChartLegacyProfile1() {
-            
-         //}
+         function drawChartLegacyProfile1() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'track_type that is NOT:');
+            data.addColumn('number', 'Number');
+            data.addRows([
+              ['Existed', profileNotExisted],
+              ['Migrated', profileNotMigrated],
+              ['Failed', profileNotFailed],
+              ['profile_not_found', profileNotNotFound]
+            ]);
+
+            var table = new google.visualization.Table(document.getElementById('chart_legacy1'));
+            table.draw(data, {showRowNumber: true});   
+         }
 
          function drawChartLegacyProfile2() {
             var data = google.visualization.arrayToDataTable([
@@ -301,7 +318,7 @@
          echo 'Percentage of profiles migrated: ' . ($arrayResultMigrated[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>"; 
       ?>
 
-      //<div id="chart_legacy1" style="width: 900px; height: 500px;"></div>
+      <div id="chart_legacy1"></div>
       <div id="chart_legacy2" style="width: 900px; height: 500px;"></div>
       //<div id="chart_legacy3" style="width: 900px; height: 500px;"></div>
 
