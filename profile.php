@@ -129,8 +129,8 @@
          google.load("visualization", "1", {packages:['table']});
          google.setOnLoadCallback(drawChart24);
          google.setOnLoadCallback(drawChart48);
-         google.setOnLoadCallback(drawChartLegacyProfile1);
-         google.setOnLoadCallback(drawChartLegacyProfile2);
+         google.setOnLoadCallback(drawChartTrackTypeNot);
+         google.setOnLoadCallback(drawChartTrackType);
          google.setOnLoadCallback(drawChartPercentageFail);
          google.setOnLoadCallback(drawChartPercentageNotFound);
          
@@ -236,22 +236,22 @@
             chart.draw(data, options);
          }
 
-         function drawChartLegacyProfile1() {
+         function drawChartTrackTypeNot() {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'track_type that is NOT:');
+            data.addColumn('string', 'Track Type That Is NOT:');
             data.addColumn('number', 'Number');
             data.addRows([
               ['Existed', profileNotExisted],
               ['Migrated', profileNotMigrated],
               ['Failed', profileNotFailed],
-              ['profile_not_found', profileNotNotFound]
+              ['Profile_not_found', profileNotNotFound]
             ]);
 
-            var table = new google.visualization.Table(document.getElementById('chart_legacy1'));
+            var table = new google.visualization.Table(document.getElementById('chart_trackTypeNot'));
             table.draw(data, {showRowNumber: true});   
          }
 
-         function drawChartLegacyProfile2() {
+         function drawChartTrackType() {
             var data = google.visualization.arrayToDataTable([
                ['Profile', 'Number'],
                ['Existed', profileExisted],
@@ -261,10 +261,10 @@
             ]);
 
             var options = {
-               title: 'Second profile graph'
+               title: 'Track Type Classification'
             };
 
-            var chart = new google.visualization.PieChart(document.getElementById('chart_legacy2'));
+            var chart = new google.visualization.PieChart(document.getElementById('chart_trackType'));
             chart.draw(data, options);
          }
         
@@ -323,9 +323,11 @@
       <div id="chart_div" style="width: 900px; height: 500px;"></div>
       <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
       <div id="another_chart_div" style="width: 900px; height: 500px;"></div>
-
+      
+      
       <!-- Print out legacy profiles analysis result -->
       <?php
+         /*
          echo 'Number of profiles with track type that is NOT: <br>';
          echo '- existed: ' . $arrayResultNotExisted[0][0] . "<br>";
          echo '- migrated: ' . $arrayResultNotMigrated[0][0] . "<br>";
@@ -341,11 +343,12 @@
          echo 'Percentage of profiles that have failed: ' . ($arrayResultFail[0][0] / $arrayResultMigrated[0][0] * 100) . '%' . "<br>"; 
          echo 'Percentage of profiles that existed already: ' . ($arrayResultExisted[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>";
          echo 'Percentage of profiles not found: ' . ($arrayResultProfileNotFound[0][0] / $arrayResultMigrated[0][0] * 100) . '%' . "<br>";
-         echo 'Percentage of profiles migrated: ' . ($arrayResultMigrated[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>"; 
-      ?>
+         echo 'Percentage of profiles migrated: ' . ($arrayResultMigrated[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>";
+         */ 
+      ?>     
 
-      <div id="chart_legacy1"></div>
-      <div id="chart_legacy2" style="width: 900px; height: 500px;"></div>
+      <div id="chart_trackTypeNot"></div>
+      <div id="chart_trackType" style="width: 900px; height: 500px;"></div>
       <div id="chart_percentageFail" style="width: 900px; height: 400px;"></div>
       <div id="chart_percentageNotFound" style="width: 900px; height: 400px;"></div>
    </body>
