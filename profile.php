@@ -131,7 +131,8 @@
          google.setOnLoadCallback(drawChart48);
          google.setOnLoadCallback(drawChartLegacyProfile1);
          google.setOnLoadCallback(drawChartLegacyProfile2);
-         //google.setOnLoadCallback(drawChartLegacyProfile3);
+         google.setOnLoadCallback(drawChartPercentageFail);
+         google.setOnLoadCallback(drawChartPercentageNotFound);
          
          // Draw line chart, past 24 hours
          function drawChart24() {
@@ -267,10 +268,35 @@
             chart.draw(data, options);
          }
         
-         //function drawChartLegacyProfile3() {
-            
+         function drawChartPercentageFail() {
+            var data = google.visualization.arrayToDataTable([
+              ['Legacy Profiles', 'Failed', 'Migrated'],
+              ['', profileFailed / profileMigrated, 1]
+            ]);
 
-         //}
+            var options = {
+              title: 'Percentage of profiles that have failed',
+              hAxis: {title: 'Percentage', format: '##%'}
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_percentageFail'));
+            chart.draw(data, options);
+         }
+
+         function drawChartPercentageNotFound() {
+            var data = google.visualization.arrayToDataTable([
+              ['Legacy Profiles', 'Not Found', 'Migrated'],
+              ['', profileNotFound / profileMigrated, 1]
+            ]);
+
+            var options = {
+              title: 'Percentage of profiles not found',
+              hAxis: {title: 'Percentage', format: '##%'}
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_percentageNotFound'));
+            chart.draw(data, options);
+         }
 
          // Calculate the total number of API calls during ONE specific hour
          function getAPICalls(array, hour, currentTime, pastHour) {
@@ -320,7 +346,7 @@
 
       <div id="chart_legacy1"></div>
       <div id="chart_legacy2" style="width: 900px; height: 500px;"></div>
-      //<div id="chart_legacy3" style="width: 900px; height: 500px;"></div>
-
+      <div id="chart_percentageFail" style="width: 900px; height: 400px;"></div>
+      <div id="chart_percentageNotFound" style="width: 900px; height: 400px;"></div>
    </body>
 </html>
