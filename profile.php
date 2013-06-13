@@ -1,11 +1,15 @@
 <?php
    echo 'Login succeeded!' . "<br><br>";
-   $curl = curl_init();
+
+   /*
+    * Reference: http://www.codular.com/curl-with-php
+    */
+   $curl = curl_init(); // Instantiate an instance of cURL, which returns a cURL resource
    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://www.leagueofbeavers.com'));
-   $result = curl_exec($curl);
+   $result = curl_exec($curl); // Sending request
    echo 'Analytic website status: ' . curl_error($curl);
    
-   curl_close($curl);
+   curl_close($curl); // Close request
 ?>
 <html>
    <head>
@@ -127,7 +131,6 @@
          var profileMigrated = <?php echo $arrayResultMigrated[0][0]; ?>;
          var profileFailed = <?php echo $arrayResultFail[0][0]; ?>;
          var profileNotFound = <?php echo $arrayResultProfileNotFound[0][0]; ?>;
-
         
 
          // Set google visualization package up
@@ -326,12 +329,12 @@
 
    </head>
    <body>
-      <div id="chart_div" style="width: 900px; height: 500px;"></div>
+      <div id="chart_div" style="width: 900px; height: 500px;"></div> <!-- Displaying chart -->
       <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
       <div id="another_chart_div" style="width: 900px; height: 500px;"></div>
       
       
-      <!-- Print out legacy profiles analysis result -->
+      <!-- Print out legacy profiles analysis result. This is mainly for testing purpose -->
       <?php
          /*
          echo 'Number of profiles with track type that is NOT: <br>';
