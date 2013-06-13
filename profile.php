@@ -112,10 +112,20 @@
          // Copy current time
          var currentTime = <?php echo $currentEpochTime; ?>;
 
+         var profileExisted = <?php echo $arrayResultExisted[0][0]; ?>;
+         var profileMigrated = <?php echo $arrayResultMigrated[0][0]; ?>;
+         var profileFailed = <?php echo $arrayResultFail[0][0]; ?>;
+         var profileNotFound = <?php echo $arrayResultProfileNotFound[0][0]; ?>;
+
+        
+
          // Set google visualization package up
          google.load("visualization", "1", {packages:["corechart"]});
          google.setOnLoadCallback(drawChart24);
          google.setOnLoadCallback(drawChart48);
+         //google.setOnLoadCallback(drawChartLegacyProfile1);
+         google.setOnLoadCallback(drawChartLegacyProfile2);
+         //google.setOnLoadCallback(drawChartLegacyProfile3);
          
          // Draw line chart, past 24 hours
          function drawChart24() {
@@ -218,7 +228,33 @@
             var chart = new google.visualization.LineChart(document.getElementById('another_chart_div'));
             chart.draw(data, options);
          }
+
+         //function drawChartLegacyProfile1() {
+            
+         //}
+
+         function drawChartLegacyProfile2() {
+            var data = google.visualization.arrayToDataTable([
+               ['Profile', 'Number'],
+               ['Existed', profileExisted],
+               ['Migrated', profileMigrated],
+               ['Fail', profileFailed],
+               ['Profile_not_found', profileNotFound]
+            ]);
+
+            var options = {
+               title: 'Second profile graph'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_legacy2'));
+            chart.draw(data, options);
+         }
         
+         //function drawChartLegacyProfile3() {
+            
+
+         //}
+
          // Calculate the total number of API calls during ONE specific hour
          function getAPICalls(array, hour, currentTime, pastHour) {
             var sum = 0;
@@ -264,5 +300,10 @@
          echo 'Percentage of profiles not found: ' . ($arrayResultProfileNotFound[0][0] / $arrayResultMigrated[0][0] * 100) . '%' . "<br>";
          echo 'Percentage of profiles migrated: ' . ($arrayResultMigrated[0][0] / $arrayResultSumProfile[0][0] * 100) . '%' . "<br>"; 
       ?>
+
+      //<div id="chart_legacy1" style="width: 900px; height: 500px;"></div>
+      <div id="chart_legacy2" style="width: 900px; height: 500px;"></div>
+      //<div id="chart_legacy3" style="width: 900px; height: 500px;"></div>
+
    </body>
 </html>
