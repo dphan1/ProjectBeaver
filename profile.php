@@ -1,5 +1,11 @@
 <?php
    echo 'Login succeeded!' . "<br><br>";
+   $curl = curl_init();
+   curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://www.leagueofbeaver.com'));
+   $result = curl_exec($curl);
+   echo 'Analytic website status: ' . curl_error($curl);
+   
+   curl_close($curl);
 ?>
 <html>
    <head>
@@ -35,25 +41,25 @@
             $totalCallsPast24Hours += $arrayResult24[$i]['calls'];
          }
          
-         $queryNotExisted= "SELECT count(profile_id) 
+         $queryNotExisted= "SELECT count(track_type) 
                               FROM legacy_profiles
                               WHERE track_type != 'existed'";
          $statementNotExisted = $pdo->prepare($queryNotExisted);
          $statementNotExisted->execute();
 
-         $queryNotMigrated = "SELECT count(profile_id)
+         $queryNotMigrated = "SELECT count(track_type)
                                 FROM legacy_profiles
                                 WHERE track_type != 'migrated'";
          $statementNotMigrated = $pdo->prepare($queryNotMigrated);
          $statementNotMigrated->execute();
         
-         $queryNotFail = "SELECT count(profile_id)
+         $queryNotFail = "SELECT count(track_type)
 			    FROM legacy_profiles
                             WHERE track_type != 'fail'";
          $statementNotFail = $pdo->prepare($queryNotFail);
          $statementNotFail->execute();
 
-         $queryNotProfileNotFound = "SELECT count(profile_id)
+         $queryNotProfileNotFound = "SELECT count(track_type)
                                        FROM legacy_profiles
                                        WHERE track_type != 'profile_not_found'";
          $statementNotProfileNotFound = $pdo->prepare($queryNotProfileNotFound);
@@ -65,25 +71,25 @@
          $arrayResultNotProfileNotFound = $statementNotProfileNotFound->fetchAll();
 
 
-         $queryExisted = "SELECT count(profile_id)
+         $queryExisted = "SELECT count(track_type)
                             FROM legacy_profiles
                             WHERE track_type = 'existed'";
          $statementExisted = $pdo->prepare($queryExisted);
          $statementExisted->execute();
 
-         $queryMigrated = "SELECT count(profile_id)
+         $queryMigrated = "SELECT count(track_type)
                              FROM legacy_profiles
                              WHERE track_type = 'migrated'";
          $statementMigrated = $pdo->prepare($queryMigrated);
          $statementMigrated->execute();
         
-         $queryFail = "SELECT count(profile_id)
+         $queryFail = "SELECT count(track_type)
                          FROM legacy_profiles
                          WHERE track_type = 'fail'";
          $statementFail = $pdo->prepare($queryFail);
          $statementFail->execute();
 
-         $queryProfileNotFound = "SELECT count(profile_id)
+         $queryProfileNotFound = "SELECT count(track_type)
                                     FROM legacy_profiles
                                     WHERE track_type = 'profile_not_found'";
          $statementProfileNotFound = $pdo->prepare($queryProfileNotFound);
@@ -94,7 +100,7 @@
          $arrayResultFail = $statementFail->fetchAll();
          $arrayResultProfileNotFound = $statementProfileNotFound->fetchAll();
  
-         $querySumProfile = "SELECT count(profile_id)
+         $querySumProfile = "SELECT count(track_type)
                                FROM legacy_profiles";
          $statementSumProfile = $pdo->prepare($querySumProfile);
          $statementSumProfile->execute();
