@@ -1,7 +1,7 @@
 <?php
    echo 'Login succeeded!' . "<br><br>";
    $curl = curl_init();
-   curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://www.leagueofbeaver.com'));
+   curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://www.leagueofbeavers.com'));
    $result = curl_exec($curl);
    echo 'Analytic website status: ' . curl_error($curl);
    
