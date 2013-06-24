@@ -18,4 +18,6 @@ Route::get('/', function()
 
 Route::controller('main', 'BeaverController');
 
+Route::post('profile', 'BeaverController@showProfile'); // Register the action showProfile in BeaverController
+
 ?>
