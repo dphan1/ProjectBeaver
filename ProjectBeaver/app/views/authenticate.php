@@ -13,8 +13,12 @@
    echo $hashedPassword['password'] . "<br>";
 
    if (Hash::check($password, $hashedPassword['password'])) {
-      echo Form::open(array('         
-   } else {
+
+      // Authentication successful, routing to profile.php         
       
+   } else {
+
+      // Authentication failed, routing to loginfailed.php      
+ 
    }
 ?>
