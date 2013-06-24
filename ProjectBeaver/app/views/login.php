@@ -1,11 +1,15 @@
-<?php echo Form::open(array('action' => 'BeaverController@showProfile')); ?>
-   <?php echo Form::label('emailLabel', 'Email'); ?>
-   <?php echo Form::text('email', ''); ?>
+<?php 
+   echo Form::open(array('action' => 'BeaverController@showProfile')); 
+   echo Form::label('emailLabel', 'Email'); 
+   echo Form::text('email', ''); 
   
 
-   <?php echo Form::label('passwordLabel', 'Password') ?> 
-   <?php echo Form::password('password'); ?>
+   echo Form::label('passwordLabel', 'Password');
+   echo Form::password('password'); 
+   echo '<br>'; 
 
-   <?php echo '<br>'; ?>
-   <?php echo Form::submit('Login'); ?>
-   <?php echo Form::close(); ?>
+   echo Form::submit('Login'); 
+   echo HTML::link('main/forgot', 'Forgot your password?');
+
+   echo Form::close(); 
+?>
