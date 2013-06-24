@@ -1,6 +1,3 @@
-<!-- Authenticate.php 
-   This file serves as authentication purpose, such as checking if email exists, or if password matches the database
--->
 <?php
    $email = Input::get('email');
    echo "Your input email is: " . $email . "<br>";
@@ -15,10 +12,12 @@
    if (Hash::check($password, $hashedPassword['password'])) {
 
       // Authentication successful, routing to profile.php         
+      echo 'Authentication successful!';
       
    } else {
 
       // Authentication failed, routing to loginfailed.php      
- 
+      echo 'Authentiation failed!';
    }
+
 ?>
