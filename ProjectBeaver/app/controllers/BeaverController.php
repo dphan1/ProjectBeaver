@@ -31,6 +31,9 @@
          $password = Input::get('password'); // Get password input by user from the login form
 
          $resultArray = DB::select("SELECT password FROM users WHERE email = '" . $email . "'");
+         if (count($resultArray) < 1) { // No record in the result set => Email doesn't exist
+            return Redirect::to('main/loginfailed');
+         }
          $result = (array) $resultArray[0];
          $hashedPassword = $result['password']; // Get the hashed password from database
  
