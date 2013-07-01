@@ -1,4 +1,5 @@
 <?php
+   
    echo 'Login succeeded!' . "<br><br>";
 
    /*
@@ -10,129 +11,64 @@
    echo 'Analytic website status: ' . curl_error($curl);
    
    curl_close($curl); // Close request
+   
+   // Select statement         
+   $laravelResults = DB::select('SELECT SUM(CASE WHEN track_type = "migrated" THEN 1 ELSE 0 END) AS migrated,
+                           SUM(CASE WHEN track_type = "existed" THEN 1 ELSE 0 END) AS existed,
+                           SUM(CASE WHEN track_type = "fail" THEN 1 ELSE 0 END) AS fail,
+                           SUM(CASE WHEN track_type = "profile_not_found" THEN 1 ELSE 0 END) AS profile,
+                           SUM(CASE WHEN track_type != "migrated" THEN 1 ELSE 0 END) AS not_migrated,
+                           SUM(CASE WHEN track_type != "existed" THEN 1 ELSE 0 END) AS not_existed,
+                           SUM(CASE WHEN track_type != "fail" THEN 1 ELSE 0 END) AS not_fail,
+                           SUM(CASE WHEN track_type != "profile_not_found" THEN 1 ELSE 0 END) AS not_profile
+                     FROM legacy_profiles');
+   $laravelDetails = (array)$laravelResults[0]; // Convert result into an array, $laravelResults[0] is an stdClass object, not an array object
+
+   $currentEpochTime = time(); // Get current time in epoch time 
+
+   // Query to pull all results past 24 hours
+   $query24 = DB::select('SELECT datetime, calls 
+                    FROM status_api_calls
+                    WHERE datetime <= ' . $currentEpochTime . 
+                    ' AND datetime > ' . ($currentEpochTime - (24 * 3600)));
+
+   // Query to pull all results past 48 hours
+   $query48 = DB::select('SELECT datetime, calls 
+                    FROM status_api_calls
+                    WHERE datetime <= ' . $currentEpochTime . 
+                    ' AND datetime > ' . ($currentEpochTime - (48 * 3600))); 
+         
+   // Compute total number of API calls for past 24 hours
+   $totalCallsPast24Hours = 0;
+   for ($i = 0; $i < count($query24); $i++) {
+      $result = (array)$query24[$i];
+      $totalCallsPast24Hours += $result['calls'];
+   }
 ?>
 <html>
    <head>
-      <?php
-         $pdo = new PDO("mysql:host=localhost;dbname=datastore", 'root', 'root');
-
-         $currentEpochTime = time(); // Get current time in epoch time
-
-         // Query to pull all results past 24 hours
-         $query24 = "SELECT datetime, calls 
-                       FROM status_api_calls
-                       WHERE datetime <= " . $currentEpochTime . 
-                       " AND datetime > " . ($currentEpochTime - (24 * 3600));
-
-         // Query to pull all results past 48 hours
-         $query48 = "SELECT datetime, calls 
-                       FROM status_api_calls
-                       WHERE datetime <= " . $currentEpochTime . 
-                       " AND datetime > " . ($currentEpochTime - (48 * 3600));
-
-         $statement24 = $pdo->prepare($query24);
-         $statement24->execute();
-
-         $statement48 = $pdo->prepare($query48);
-         $statement48->execute();
-
-         $arrayResult24 = $statement24->fetchAll();
-         $arrayResult48 = $statement48->fetchAll();
-
-         // Compute total number of API calls for past 24 hours
-         $totalCallsPast24Hours = 0;
-         for ($i = 0; $i < count($arrayResult24); $i++) {
-            $totalCallsPast24Hours += $arrayResult24[$i]['calls'];
-         }
-         
-         $queryNotExisted= "SELECT count(track_type) 
-                              FROM legacy_profiles
-                              WHERE track_type != 'existed'";
-         $statementNotExisted = $pdo->prepare($queryNotExisted);
-         $statementNotExisted->execute();
-
-         $queryNotMigrated = "SELECT count(track_type)
-                                FROM legacy_profiles
-                                WHERE track_type != 'migrated'";
-         $statementNotMigrated = $pdo->prepare($queryNotMigrated);
-         $statementNotMigrated->execute();
-        
-         $queryNotFail = "SELECT count(track_type)
-			    FROM legacy_profiles
-                            WHERE track_type != 'fail'";
-         $statementNotFail = $pdo->prepare($queryNotFail);
-         $statementNotFail->execute();
-
-         $queryNotProfileNotFound = "SELECT count(track_type)
-                                       FROM legacy_profiles
-                                       WHERE track_type != 'profile_not_found'";
-         $statementNotProfileNotFound = $pdo->prepare($queryNotProfileNotFound);
-         $statementNotProfileNotFound->execute();
-         
-         $arrayResultNotExisted = $statementNotExisted->fetchAll();
-         $arrayResultNotMigrated = $statementNotMigrated->fetchAll();
-         $arrayResultNotFail = $statementNotFail->fetchAll();
-         $arrayResultNotProfileNotFound = $statementNotProfileNotFound->fetchAll();
-
-
-         $queryExisted = "SELECT count(track_type)
-                            FROM legacy_profiles
-                            WHERE track_type = 'existed'";
-         $statementExisted = $pdo->prepare($queryExisted);
-         $statementExisted->execute();
-
-         $queryMigrated = "SELECT count(track_type)
-                             FROM legacy_profiles
-                             WHERE track_type = 'migrated'";
-         $statementMigrated = $pdo->prepare($queryMigrated);
-         $statementMigrated->execute();
-        
-         $queryFail = "SELECT count(track_type)
-                         FROM legacy_profiles
-                         WHERE track_type = 'fail'";
-         $statementFail = $pdo->prepare($queryFail);
-         $statementFail->execute();
-
-         $queryProfileNotFound = "SELECT count(track_type)
-                                    FROM legacy_profiles
-                                    WHERE track_type = 'profile_not_found'";
-         $statementProfileNotFound = $pdo->prepare($queryProfileNotFound);
-         $statementProfileNotFound->execute();
-
-         $arrayResultExisted = $statementExisted->fetchAll();
-         $arrayResultMigrated = $statementMigrated->fetchAll();
-         $arrayResultFail = $statementFail->fetchAll();
-         $arrayResultProfileNotFound = $statementProfileNotFound->fetchAll();
- 
-         $querySumProfile = "SELECT count(track_type)
-                               FROM legacy_profiles";
-         $statementSumProfile = $pdo->prepare($querySumProfile);
-         $statementSumProfile->execute();
-         
-         $arrayResultSumProfile = $statementSumProfile->fetchAll();
-         
-      ?>
       <!-- Javascript code -->
-      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+      <script type="text/javascript" src="https://www.google.com/jsapi"></script> 
       <script type="text/javascript">
-         // Copy the array result from PHP
-         var result24 = <?php echo json_encode($arrayResult24); ?>;
-         var result48 = <?php echo json_encode($arrayResult48); ?>;
+
+         // Copy the array result from PHP       
+         var result24 = <?php echo json_encode($query24); ?>;
+         var result48 = <?php echo json_encode($query48); ?>;  
 
          // Copy current time
          var currentTime = <?php echo $currentEpochTime; ?>;
 
-         var profileNotExisted = <?php echo $arrayResultNotExisted[0][0]; ?>;
-         var profileNotMigrated = <?php echo $arrayResultNotMigrated[0][0]; ?>;
-         var profileNotFailed = <?php echo $arrayResultNotFail[0][0]; ?>;
-         var profileNotNotFound = <?php echo $arrayResultNotProfileNotFound[0][0]; ?>;
+         // Copy all other results to be used for graph and chart          
+         var profileNotExisted = <?php echo $laravelDetails['not_existed']; ?>;
+         var profileNotMigrated = <?php echo $laravelDetails['not_migrated']; ?>;
+         var profileNotFailed = <?php echo $laravelDetails['not_fail']; ?>;
+         var profileNotNotFound = <?php echo $laravelDetails['not_profile']; ?>;
 
-         var profileExisted = <?php echo $arrayResultExisted[0][0]; ?>;
-         var profileMigrated = <?php echo $arrayResultMigrated[0][0]; ?>;
-         var profileFailed = <?php echo $arrayResultFail[0][0]; ?>;
-         var profileNotFound = <?php echo $arrayResultProfileNotFound[0][0]; ?>;
-        
-
+         var profileExisted = <?php echo $laravelDetails['existed']; ?>;
+         var profileMigrated = <?php echo $laravelDetails['migrated']; ?>;
+         var profileFailed = <?php echo $laravelDetails['fail']; ?>;
+         var profileNotFound = <?php echo $laravelDetails['profile']; ?>;
+         
          // Set google visualization package up
          google.load("visualization", "1", {packages:["corechart"]});
          google.load("visualization", "1", {packages:['table']});
@@ -142,7 +78,7 @@
          google.setOnLoadCallback(drawChartTrackType);
          google.setOnLoadCallback(drawChartPercentageFail);
          google.setOnLoadCallback(drawChartPercentageNotFound);
-         
+
          // Draw line chart, past 24 hours
          function drawChart24() {
             // Set up data
@@ -244,7 +180,7 @@
             var chart = new google.visualization.LineChart(document.getElementById('another_chart_div'));
             chart.draw(data, options);
          }
-
+         
          function drawChartTrackTypeNot() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Track Type That Is NOT:');
@@ -260,6 +196,9 @@
             table.draw(data, {showRowNumber: true});   
          }
 
+	 /* Draw a pie chart with 4 different values:
+          * track_type that is: existed, migrated, fail, or profile_not_found
+          */
          function drawChartTrackType() {
             var data = google.visualization.arrayToDataTable([
                ['Profile', 'Number'],
@@ -291,7 +230,10 @@
             var chart = new google.visualization.BarChart(document.getElementById('chart_percentageFail'));
             chart.draw(data, options);
          }
-
+          
+         /* Draw a percentage bar chart with two values: migrated, profile_not_found
+          * migrated is always 100%
+          */
          function drawChartPercentageNotFound() {
             var data = google.visualization.arrayToDataTable([
               ['Legacy Profiles', 'Not Found', 'Migrated'],
@@ -306,6 +248,7 @@
             var chart = new google.visualization.BarChart(document.getElementById('chart_percentageNotFound'));
             chart.draw(data, options);
          }
+         
 
          // Calculate the total number of API calls during ONE specific hour
          function getAPICalls(array, hour, currentTime, pastHour) {
@@ -325,17 +268,20 @@
             }
             return sum;
          }
+           
       </script>
-
    </head>
    <body>
-      <div id="chart_div" style="width: 900px; height: 500px;"></div> <!-- Displaying chart -->
-      <?php echo 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
-      <div id="another_chart_div" style="width: 900px; height: 500px;"></div>  
 
+      <!-- Display charts on browser -->
+      <div id="chart_div" style="width: 900px; height: 500px;"></div> <!-- Displaying chart -->
+      <?php echo "<br>" . 'Total Pinterest calls past 24 hours: ' . $totalCallsPast24Hours; ?>
+
+      <div id="another_chart_div" style="width: 900px; height: 500px;"></div>  
       <div id="chart_trackTypeNot"></div>
       <div id="chart_trackType" style="width: 900px; height: 500px;"></div>
       <div id="chart_percentageFail" style="width: 900px; height: 400px;"></div>
       <div id="chart_percentageNotFound" style="width: 900px; height: 400px;"></div>
+     
    </body>
 </html>
