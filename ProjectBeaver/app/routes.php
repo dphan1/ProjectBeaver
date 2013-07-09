@@ -13,11 +13,11 @@
 
 Route::get('/', function()
 {
-   return View::make('hello');
+   return Redirect::to('main/home');
 });
 
 Route::controller('main', 'BeaverController');
 
-Route::post('profile', 'BeaverController@showProfile'); // Register the action showProfile in BeaverController
+Route::post('home', 'BeaverController@showHome'); // Register the action showHome in BeaverController
 
 ?>
