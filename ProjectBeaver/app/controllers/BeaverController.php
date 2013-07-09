@@ -6,6 +6,10 @@
          echo "This is the index page.";
       }
 
+      public function getBootstraptest() {
+         return View::make('bootstraptest');
+      }
+
       public function getAuthenticate() {
          return View::make('authenticate');
       }
@@ -22,11 +26,23 @@
          return View::make('loginfailed');
       }
 
-      public function getProfile() {
-         return View::make('profile');
+      public function getUsers() {
+         return View::make('users');
+      }
+
+      public function getDomains() {
+         return View::make('domains');
+      }
+
+      public function getProfiles() {
+         return View::make('profiles');
+      }
+
+      public function getHome() {
+         return View::make('home');
       }
   
-      public function showProfile() {
+      public function showHome() {
          $email = Input::get('email'); // Get email input by user from the login form
          $password = Input::get('password'); // Get password input by user from the login form
 
@@ -38,7 +54,7 @@
          $hashedPassword = $result['password']; // Get the hashed password from database
  
          if (Hash::check($password, $hashedPassword)) { // Password matched
-            return Redirect::to('main/profile');
+            return Redirect::to('main/home');
          } else { // Password not matched 
             return Redirect::to('main/loginfailed');
          }
