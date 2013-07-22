@@ -19,5 +19,4 @@
    }
 
    echo "The hamming distance is: " . $dist . "<br>"; 
-   echo $end - $begin;
 ?>
