@@ -1,31 +1,46 @@
-<function name="ph_image_dist_with_hash" if="HAVE_IMAGE_HASH">
-   <proto>float ph_image_dist_with_hash(string h1, string h2)</proto>
-   <summary>pHash image distance Dat's version.</summary>
-   <description>
-        Calculate distance between two images.
-   </description>
-   <code>
-<![CDATA[
-       ulong64 hash1 = (ulong64) h1;
-       ulong64 hash2 = (ulong64) h2; 
-       int dist = ph_hamming_distance(hash1, hash2);
-       RETURN_DOUBLE(dist);  
-            
-]]>
-</code>
-  </function>
+<!--  Reference: https://github.com/lucidix/phash/blob/5be2d454c932152e9b2395e21f97a008c6bd8766/pHash-lib/bindings/php/pHash.cpp
 
-<function name="ph_image_dist_test" if="HAVE_IMAGE_HASH">
-   <proto>float ph_image_dist_test(string h1, string h2)</proto>
+-->
+
+<function name="ph_dct_imagehash_hexadecimal" if="HAVE_IMAGE_HASH">
+   <proto>string ph_dct_imagehash_hexadecimal(string file)</proto>
+   <summary>pHash DCT image hash, returning a hex string</summary>
+   <description>
+        Perceptual image hash based on DCT.
+   </description>
+   <code>
+<![CDATA[
+        char buffer [64];
+        int n;
+        char *str;
+
+        ulong64 *hash = (ulong64 *)malloc(sizeof(ulong64));
+        int ret = ph_dct_imagehash(file, *hash);
+        if(ret != 0) {
+                free(hash);
+                RETURN_FALSE;
+        } else {
+                n = sprintf(buffer, "%016llx", *hash);
+                str = estrdup(buffer);
+                free(hash);
+                RETURN_STRING(str, 0);
+        }
+]]>
+    </code>
+</function>
+
+
+<function name="ph_image_dist_with_hashes" if="HAVE_IMAGE_HASH">
+   <proto>float ph_image_dist_with_hashes(string h1, string h2)</proto>
    <summary>pHash image distance Dat's version.</summary>
    <description>
         Calculate distance between two images.
    </description>
    <code>
 <![CDATA[
-       ulong64 hash1 = std::strtoul(h1, NULL, 0);
-       ulong64 hash2 = std::strtoul(h2, NULL, 0);
-       int dist = ph_hamming_distance(hash1, hash2);
+       ulong64 hash1 = std::strtoull(h1, NULL, 16); // Convert the hash string (hex) to number ulong64
+       ulong64 hash2 = std::strtoull(h2, NULL, 16);
+       int dist = ph_hamming_distance(hash1, hash2); // Compute the hamming distance 
        RETURN_DOUBLE(dist);  
             
 ]]>
