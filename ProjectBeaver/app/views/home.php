@@ -210,6 +210,10 @@
          }
       </style>
 
+
+      <!--                    TOP NAVIGATION BAR              
+      ================================================================-->
+
       <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -233,19 +237,27 @@
         </div>
       </div>
     </div>
+   
+    <!-- END TOP -->
+
+
+    <!--                      REST OF THE PAGE
+    ========================================================-->
 
     <div class="container-fluid">
       <div class="row-fluid">
+
         <div class="span3">
-          <div class="well sidebar-nav">
+          <div class="well sidebar-nav">    <!-- SIDEBAR NAVIGATION -->
             <ul class="nav nav-list">
               <li class="nav-header">Navigate to</li>
               <li><a href="#API24">Past 24h</a></li>
               <li><a href="#API48">Past 48h</a></li>
               <li><a href="#ErrorChart">Error Chart</a></li>
             </ul>
-          </div><!--/.well -->
+          </div><!-- END SIDEBAR -->
         </div><!--/span-->
+
         <div class="span9">
           <div class="hero-unit">
             <h1>Tailwind Admin Dashboard</h1>
@@ -257,6 +269,8 @@
             </div><!--/span-->
           </div><!--/row-->
           
+
+          <!--              API CALLS 24 HOURS           -->
           <section id="API24">
           <div class="page-header">
 
@@ -268,19 +282,25 @@
             </div><!--/span-->
           </div><!--/row-->
           </section>
+          <!-- END API 24 -->
 
+
+          <!--             API CALLS 48 HOURS           -->
           <section id="API48">
           <div class="page-header">
 
           </div>
-          <div class="row-fluid">
+          <div class="row-fluid">  <
             <div class="span10">
               <h2>API Calls last 48 hrs:</h2>
               <p><div id="another_chart_div" style="width: 900px; height: 500px;"></div></p>
             </div><!--/span-->         
           </div><!--/row-->
           </section>
+          <!-- END API 48 --> 
 
+
+          <!--             API ERRORS CHART             -->
           <section id="ErrorChart">
           <div class="page-header">
 
@@ -291,6 +311,7 @@
               <p><div id="chart_APIErrors" style="width: 900px; height: 500px;"></div></p>
           </div><!--/row-->
           </section>
+          <!-- END ERRORS CHART -->
 
         </div><!--/span-->
       </div><!--/row-->
@@ -298,9 +319,11 @@
 
       <hr>
        
+      <!-- COPYRIGHT LABEL -->
       <footer>
         <p>&copy; Tailwind 2013</p>
       </footer>
+      <!-- END COPYRIGHT LABEL -->
 
     </div><!--/.fluid-containter-->         
             
