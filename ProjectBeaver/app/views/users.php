@@ -1,5 +1,7 @@
 <?php
    $queryTotalUsers = DB::select('SELECT COUNT(cust_id) AS total_user FROM users');
+   $resultTotalUsers = (array)$queryTotalUsers[0];
+
    $queryUsers = DB::select('SELECT * FROM users');
    $queryDateRange = DB::select('SELECT (max(timestamp) - min(timestamp)) AS date_range FROM users');
 
@@ -30,6 +32,7 @@
          google.load("visualization", "1", {packages:['table']});
          google.setOnLoadCallback(drawChartUsers);
          google.setOnLoadCallback(drawChartCompetitors);
+
          // Draw line chart, past 24 hours
          function drawChartUsers() {
              dateRange = queryDateRange[0]['date_range'] / 86400;
@@ -37,7 +40,7 @@
              var a = new Array();
              a[0] = ['Days', 'Number of Users'];
              for (var i = 1; i < dateRange; i++) {
-                var date = new Date((currentTime - (dateRange - i) * 86400) * 1000);
+                var date = new Date((currentTime - (dateRange - i) * 86400) * 1000); // Calculate the x-axis date value
                 var month = date.getMonth() + 1;
                 var formattedTime = month + "/" + date.getDate() + "/" + date.getFullYear();
    
@@ -170,14 +173,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Project Beaver</a>
+          <a class="brand" href="/main/home">Project Beaver</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">Username</a>
             </p>
             <ul class="nav">
               <li><a href="http://admin.tailwindapp.com/">Home</a></li>
-              <li class="active"><a href="http://admin.tailwindapp.com/main/users">Users</a></li>
+              <li class="active"><a href="#">Users</a></li>
               <li><a href="http://admin.tailwindapp.com/main/domains">Domains</a></li>
        	      <li><a href="http://admin.tailwindapp.com/main/profiles">Profiles</a></li>
             </ul>
@@ -191,39 +194,46 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#users">Users Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              <li class="nav-header">Navigate to</li>
+              <li><a href="#UserGraph">User Graph</a></li>
+              <li><a href="#CompetitorGraph">Competitor Graph</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
           <div class="hero-unit">
             <h1>Tailwind Admin Dashboard</h1>
-            <p>I don't know what to write here.</p>
-            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
           </div>
           <div class="row-fluid">
             <div class="span8">
-              <h3>Total number of users: <script>document.write(queryTotalUsers[0]['total_user']);</script></h3>
+              <h3>Total number of users: <?php echo number_format($resultTotalUsers['total_user']); ?></h3>
             </div><!--/span-->
           </div><!--/row-->
+
+          <section id="UserGraph">
+          <div class="page-header">
+
+          </div>
           <div class="row-fluid">
             <div class="span10">
               <h2>Graph of Users Signed Up Per Day:</h2>
               <p><div id="chart_users" style="width: 900px; height: 500px;"></div></p>
             </div><!--/span-->
           </div><!--/row-->
+          </section>
+
+          <section id="CompetitorGraph">
+          <div class="page-header">
+
+          </div>
           <div class="row-fluid">
             <div class="span10">
               <h2>Graph of Competitors Added Per Day:</h2>
               <p><div id="chart_competitors" style="width: 900px; height: 500px;"></div></p>
             </div><!--/span-->
           </div><!--/row-->
+          </section>
+
         </div><!--/span-->
       </div><!--/row-->
 

@@ -1,10 +1,10 @@
 <?php
-   $queryTotalDomains = DB::select('SELECT COUNT(DISTINCT(domain)) AS total_domain FROM user_accounts_domains');
-   $resultTotalDomains = (array)$queryTotalDomains[0];
+   $queryTotalProfile = DB::select('SELECT COUNT(user_id) AS total_profile FROM status_profiles');
+   $resultTotalProfile = (array)$queryTotalProfile[0];
 ?>
 <html>
    <head>
-      <script>var totalDomains = <?php echo json_encode($queryTotalDomains); ?>; </script>
+      <script>var totalProfiles = <?php echo json_encode($queryTotalProfile); ?>;</script>
       <link href="<?php echo asset('bootstrap.css'); ?>" rel="stylesheet" media="screen">
       <link href="<?php echo asset('bootstrap-responsive.css'); ?>" rel="stylesheet">
 
@@ -59,8 +59,8 @@
             <ul class="nav">
               <li><a href="http://admin.tailwindapp.com/">Home</a></li>
               <li><a href="http://admin.tailwindapp.com/main/users">Users</a></li>
-              <li class="active"><a href="http://admin.tailwindapp.com/main/domains">Domains</a></li>
-       	      <li><a href="http://admin.tailwindapp.com/main/profiles">Profiles</a></li>
+              <li><a href="http://admin.tailwindapp.com/main/domains">Domains</a></li>
+       	      <li class="active"><a href="http://admin.tailwindapp.com/main/profiles">Profiles</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -82,7 +82,7 @@
           </div>
           <div class="row-fluid">
             <div class="span10">
-              <h3>Total number of domains: <?php echo number_format($resultTotalDomains['total_domain']); ?></h3>
+              <h3>Total number of profiles: <?php echo number_format($resultTotalProfile['total_profile']); ?></h3>
             </div><!--/span-->
           </div><!--/row-->
           <div class="row-fluid">

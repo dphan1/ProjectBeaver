@@ -14,6 +14,7 @@
                     WHERE datetime <= ' . $currentEpochTime . 
                     ' AND datetime > ' . ($currentEpochTime - (48 * 3600))); 
 
+   // Query to get the total error messages for each type of messages.
    $queryAPIErrors = DB::select('SELECT SUM(CASE WHEN message = "API method not found." THEN 1 ELSE 0 END) AS method_not_found, 
        			SUM(CASE WHEN message = "Authentication failed." THEN 1 ELSE 0 END) AS auth_fail,
        			SUM(CASE WHEN message = "Bookmark not found." THEN 1 ELSE 0 END) AS bookmark_not_found,
@@ -64,13 +65,15 @@
                if (maxCalls < getAPICalls(result24, i, currentTime, 24)) {
                   maxCalls = getAPICalls(result24, i, currentTime, 24);
                }
-            }
+            } // End find max calls
            
             // Set up data
             var a = new Array();
             a[0] = ['Hour', 'API Calls', 'Max Calls', 'Max Calls Limit'];
             for (var i = 0; i < 23; i++) {
-               a[i + 1] = [i, getAPICalls(result24, i, currentTime, 24), maxCalls, limitCalls];  
+               var date = new Date((currentTime - (23 - i) * 3600) * 1000); // Calculate x-axis time value
+               var formattedTime = date.toTimeString();
+               a[i + 1] = [formattedTime, getAPICalls(result24, i, currentTime, 24), maxCalls, limitCalls];  
             }
             var data = google.visualization.arrayToDataTable(a);
 
@@ -99,7 +102,9 @@
 
             a[0] = ['Hour', 'API Calls', 'Max Calls', 'Max Calls Limit'];
             for (var i = 0; i < 47; i++) {
-               a[i + 1] = [i, getAPICalls(result48, i, currentTime, 48), maxCalls, limitCalls];
+               var date = new Date((currentTime - (47 - i) * 3600) * 1000); // Calculate x-axis time value
+       	       var formattedTime = date.toTimeString();
+               a[i + 1] = [formattedTime, getAPICalls(result48, i, currentTime, 48), maxCalls, limitCalls];
             }
 
        	    var	data = google.visualization.arrayToDataTable(a);
@@ -113,6 +118,7 @@
             chart.draw(data, options);
          }
 
+         // Pie chart, summary of API error messages
          function drawChartAPIErrors() {
             var data = google.visualization.arrayToDataTable([
                ['Error message', 'Number of messages'],
@@ -136,7 +142,10 @@
          }
          
 
-         // Calculate the total number of API calls during ONE specific hour
+         /* Calculate the total number of API calls during ONE specific hour
+          * If you want to calculate the total number of API calls 4 hours ago, last 30 hours,
+          * then hour would be 4, and pastHour would be 30.
+          */
          function getAPICalls(array, hour, currentTime, pastHour) {
             var sum = 0;
             if (hour >= pastHour || hour < 0) { // Check boundary
@@ -156,8 +165,15 @@
          }
            
       </script>
+      
+
+      <!--                      LOADING BOOTSTRAP STUFF 
+      ====================================================================================-->
       <link href="<?php echo asset('bootstrap.css'); ?>" rel="stylesheet" media="screen">
       <link href="<?php echo asset('bootstrap-responsive.css'); ?>" rel="stylesheet">
+      
+      <!-- END LOADING -->
+
 
       <style type="text/css">
          body {
@@ -202,14 +218,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Project Beaver</a>
+          <a class="brand" href="/main/home">Project Beaver</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">Username</a>
             </p>
             <ul class="nav">
-              <li class="active"><a href="http://admin.tailwindapp.com/">Home</a></li>
-              <li class=""><a href="http://admin.tailwindapp.com/main/users">Users</a></li>
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="http://admin.tailwindapp.com/main/users">Users</a></li>
               <li><a href="http://admin.tailwindapp.com/main/domains">Domains</a></li>
               <li><a href="http://admin.tailwindapp.com/main/profiles">Profiles</a></li>
             </ul>
@@ -223,46 +239,59 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#users">Users Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              <li class="nav-header">Navigate to</li>
+              <li><a href="#API24">Past 24h</a></li>
+              <li><a href="#API48">Past 48h</a></li>
+              <li><a href="#ErrorChart">Error Chart</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
           <div class="hero-unit">
             <h1>Tailwind Admin Dashboard</h1>
-            <p>I don't know what to write here.</p>
-            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+            <p>Welcome!</p>
           </div>
           <div class="row-fluid">
             <div class="span10">
-              <h3 text-align: center>Total pinterest calls last 24 hours: <?php echo $totalCallsPast24Hours; ?> </h3>
+              <h3 text-align: center>Total pinterest calls last 24 hours: <?php echo number_format($totalCallsPast24Hours); ?> </h3>
             </div><!--/span-->
           </div><!--/row-->
+          
+          <section id="API24">
+          <div class="page-header">
+
+          </div>
           <div class="row-fluid">
             <div class="span10">
               <h2>API Calls last 24 hrs:</h2>
               <p><div id="chart_div" style="width: 900px; height: 500px;"></div></p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
             </div><!--/span-->
           </div><!--/row-->
+          </section>
+
+          <section id="API48">
+          <div class="page-header">
+
+          </div>
           <div class="row-fluid">
             <div class="span10">
               <h2>API Calls last 48 hrs:</h2>
               <p><div id="another_chart_div" style="width: 900px; height: 500px;"></div></p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
             </div><!--/span-->         
           </div><!--/row-->
+          </section>
+
+          <section id="ErrorChart">
+          <div class="page-header">
+
+          </div>
           <div class="row-fluid">
             <div class="span10">
               <h2>API Errors Chart:</h2>
               <p><div id="chart_APIErrors" style="width: 900px; height: 500px;"></div></p>
           </div><!--/row-->
+          </section>
+
         </div><!--/span-->
       </div><!--/row-->
 
@@ -273,11 +302,8 @@
         <p>&copy; Tailwind 2013</p>
       </footer>
 
-    </div><!--/.fluid-containter-->
-         
-            <!--<div class="pos_left" id="chart_div" style="width: 900px; height: 500px;"></div><!-- Displaying chart -->
+    </div><!--/.fluid-containter-->         
             
-            <!--<div class="pos_left" id="another_chart_div" style="width: 900px; height: 500px;"></div>  
    </body>
 
 </html>
